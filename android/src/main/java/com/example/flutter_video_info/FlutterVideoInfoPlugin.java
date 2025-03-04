@@ -19,27 +19,20 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 /**
  * FlutterVideoInfoPlugin
  */
 public class FlutterVideoInfoPlugin implements FlutterPlugin, MethodCallHandler {
 
-    private String chName = "flutter_video_info";
-    public static Context context;
+    private MethodChannel channel;
+    private Context context;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-        final MethodChannel channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(),
-                "flutter_video_info");
-        channel.setMethodCallHandler(new FlutterVideoInfoPlugin());
+        channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "flutter_video_info");
+        channel.setMethodCallHandler(this);
         context = flutterPluginBinding.getApplicationContext();
-    }
-
-    public static void registerWith(Registrar registrar_) {
-        final MethodChannel channel = new MethodChannel(registrar_.messenger(), "flutter_video_info");
-        channel.setMethodCallHandler(new FlutterVideoInfoPlugin());
     }
 
     @Override
@@ -54,6 +47,7 @@ public class FlutterVideoInfoPlugin implements FlutterPlugin, MethodCallHandler 
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+        channel.setMethodCallHandler(null);
     }
 
     String getVidInfo(String path) {
